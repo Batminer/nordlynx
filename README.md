@@ -45,3 +45,45 @@ configure more than one NordVPN client tunnel on pfsense.
 A screenshot showing what to copy where
 https://imgur.com/a/j8ttO77
 
+
+########
+
+
+As OP said you first use command wg showconf nordlynx which will give you this
+
+Screen 1
+
+From this screen you get your private key, nordvpn public key, nordvpn ip and port.
+
+Then with command ifconfig nordlynx you get this screen
+
+Screen 2
+
+Here you can see the IP your are given and the mask. The gateway by default is ending on .1
+
+Then you add new Wireguard interface in Pfsense
+
+Screen 3
+
+Don't
+ forget to enable it. Add the address from screen 2 with the appropriate
+ mask (/16), listen port may not be the same, but I kept it. You can 
+paste YOUR private key (screen 1), Pfsense will auto generate the public
+ key when saving.
+
+Then you add the peer (nordvpn server)
+
+Screen 4
+
+You
+ put the IP , port and public key of Nordvpn from screen 1. Peer 
+Wireguard IP is the ".1" of what ifconfig gave you, but with /32 at the 
+end (not /16).
+
+After that you need
+ to add the Interface from Interface Assignments and don't forget to 
+enable it and Apply the settings. Then you follow the standard steps - 
+new NAT rule for the interface, explicit gateway for the LAN rule etc 
+(from the standard NordVpn guide for OpenVPN).
+
+
